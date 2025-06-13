@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZEO - AI Clinical Assistant</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <h1>ZEO</h1>
+                <span class="tagline">AI Clinical Assistant</span>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="upload-section" id="uploadSection">
+                <div class="upload-card">
+                    <div class="upload-icon">🎙️</div>
+                    <h2>Iniciar Gravação ou Enviar Áudio</h2>
+                    <p>Grave sua consulta ou faça upload de um arquivo de áudio</p>
+                    
+                    <div class="upload-options">
+                        <button class="btn-primary" id="recordBtn">
+                            <span class="btn-icon">●</span>
+                            Iniciar Gravação
+                        </button>
+                        
+                        <div class="divider">ou</div>
+                        
+                        <label for="audioFile" class="btn-secondary">
+                            <span class="btn-icon">📁</span>
+                            Selecionar Arquivo
+                        </label>
+                        <input type="file" id="audioFile" accept="audio/*" hidden>
+                    </div>
+                </div>
+            </div>
+
+            <div class="processing-section hidden" id="processingSection">
+                <div class="processing-card">
+                    <div class="processing-header">
+                        <h3>Processando Áudio</h3>
+                        <div class="status-badge" id="statusBadge">Processando...</div>
+                    </div>
+                    
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <span class="progress-text" id="progressText">0%</span>
+                    </div>
+                    
+                    <div class="processing-info">
+                        <p>Analisando áudio e gerando transcrição...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-section hidden" id="resultsSection">
+                <div class="results-card">
+                    <div class="results-header">
+                        <h3>Transcrição Completa</h3>
+                        <div class="status-badge success">Concluído</div>
+                    </div>
+                    
+                    <div class="transcription-content" id="transcriptionContent">
+                        <!-- Transcription will be inserted here -->
+                    </div>
+                    
+                    <div class="results-actions">
+                        <button class="btn-secondary" id="newTranscriptionBtn">
+                            Nova Transcrição
+                        </button>
+                        <button class="btn-primary" id="exportBtn">
+                            Exportar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
