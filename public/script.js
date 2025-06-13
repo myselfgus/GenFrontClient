@@ -6,10 +6,21 @@ class ZeoClient {
         this.ws = null;
         this.currentJobId = null;
         
+        this.initializeSplashScreen();
+    }
+    
+    async initializeSplashScreen() {
+        // Show splash screen animation
+        await this.animateSplashScreen();
+        
+        // Initialize main app after splash
         this.initializeElements();
         this.setupEventListeners();
         this.connectWebSocket();
         this.initializeAnimations();
+        
+        // Transition to main app
+        this.transitionToMainApp();
     }
     
     initializeElements() {
@@ -304,6 +315,69 @@ class ZeoClient {
                     ease: "power2.out"
                 });
             });
+        });
+    }
+    
+    async animateSplashScreen() {
+        return new Promise((resolve) => {
+            const tl = gsap.timeline();
+            
+            // Animate logo title
+            tl.to('.splash-title', {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                ease: "power3.out"
+            })
+            // Animate underline expansion
+            .to('.splash-underline', {
+                width: '120px',
+                duration: 0.8,
+                ease: "power2.out"
+            }, "-=0.5")
+            // Animate tagline
+            .to('.splash-tagline', {
+                opacity: 1,
+                y: 0,
+                duration: 0.6,
+                ease: "power2.out"
+            }, "-=0.4")
+            // Show loader
+            .to('.splash-loader', {
+                opacity: 1,
+                duration: 0.4,
+                ease: "power2.out"
+            }, "-=0.2")
+            // Wait for effect
+            .to({}, { duration: 2 })
+            // Complete
+            .call(() => resolve());
+        });
+    }
+    
+    transitionToMainApp() {
+        const splashScreen = document.getElementById('splashScreen');
+        const mainApp = document.getElementById('mainApp');
+        
+        // Fade out splash
+        gsap.to(splashScreen, {
+            opacity: 0,
+            scale: 0.95,
+            duration: 0.8,
+            ease: "power2.in",
+            onComplete: () => {
+                splashScreen.classList.add('hidden');
+                
+                // Show main app
+                mainApp.style.opacity = '1';
+                mainApp.style.visibility = 'visible';
+                
+                // Animate main app entrance
+                gsap.fromTo(mainApp, 
+                    { opacity: 0, scale: 1.05 },
+                    { opacity: 1, scale: 1, duration: 0.8, ease: "power3.out" }
+                );
+            }
         });
     }
 }

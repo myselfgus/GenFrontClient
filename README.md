@@ -1,12 +1,14 @@
 # ZEO - AI Clinical Assistant
 
-Modern, extensible MCP client for clinical transcription and AI assistance with Tesla/xAI inspired interface.
+Modern, extensible MCP client for clinical transcription and AI assistance with minimalist aesthetic and cinematic splash screen.
 
 ## ✨ Features
 
+- **Animated Splash Screen**: Professional intro with ZEO logo animation sequence
 - **Audio Recording & Upload**: Native browser recording or file upload support
 - **Real-time Processing**: WebSocket-based progress updates with smooth animations
-- **Modern UI**: Glassmorphism design with GSAP animations and Inter typography
+- **Minimalist UI**: Monochromatic design with subtle glow effects and borderless components
+- **Modern Typography**: Space Grotesk + Manrope font pairing for enhanced readability
 - **MCP Architecture**: Built for future integration with Model Context Protocol servers
 - **Responsive Design**: Works seamlessly across desktop and mobile devices
 
@@ -24,7 +26,8 @@ Open http://localhost:3000 in your browser.
 
 ## 🏗️ Architecture
 
-**Frontend**: Single-page app with three main states:
+**Frontend**: Single-page app with animated intro and three main states:
+- Splash Screen (animated logo sequence with loading)
 - Upload (recording/file selection)
 - Processing (real-time progress)  
 - Results (transcription display)
