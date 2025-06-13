@@ -37,11 +37,12 @@ Open http://localhost:3000 in your browser.
 
 ## 🎨 Design System
 
-- **Typography**: Inter font with advanced OpenType features
+- **Typography**: Space Grotesk (headers) + Manrope (body) for modern clarity
 - **Icons**: Lucide icon system with crisp vectors
-- **Effects**: Advanced glassmorphism with backdrop-filter
-- **Animations**: GSAP-powered smooth transitions
-- **Colors**: Gradient-based palette inspired by Tesla/xAI
+- **Aesthetic**: Monochromatic with subtle matte glow effects
+- **Layout**: Borderless components with clean minimalist approach
+- **Animations**: GSAP-powered smooth transitions with refined feedback
+- **Colors**: Dark gradient palette (#0f0f0f → #1a1a1a) with subtle white accents
 
 ## 🔧 Future Integration
 

@@ -5,11 +5,10 @@
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: radial-gradient(ellipse at top, #667eea 0%, #764ba2 100%);
+    font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%);
     min-height: 100vh;
-    color: #1e293b;
-    font-feature-settings: 'cv11', 'ss01';
+    color: #e5e5e5;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
@@ -27,22 +26,35 @@ body {
 }
 
 .logo h1 {
-    font-size: 3.5rem;
-    font-weight: 800;
-    background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 4rem;
+    font-weight: 700;
+    color: #ffffff;
     margin-bottom: 0.5rem;
-    letter-spacing: -0.025em;
-    text-shadow: 0 0 40px rgba(255, 255, 255, 0.3);
+    letter-spacing: -0.05em;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    position: relative;
+}
+
+.logo h1::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #ffffff, transparent);
+    opacity: 0.3;
 }
 
 .tagline {
-    font-size: 1.1rem;
-    color: rgba(255, 255, 255, 0.8);
-    font-weight: 500;
-    letter-spacing: 0.025em;
+    font-family: 'Manrope', sans-serif;
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
 }
 
 .main-content {
@@ -55,43 +67,37 @@ body {
 .upload-card,
 .processing-card,
 .results-card {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(20px) saturate(120%);
+    border-radius: 0;
     padding: 3rem;
     text-align: center;
-    box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2),
-        0 0 0 1px rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 60px rgba(255, 255, 255, 0.03);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
 }
 
 .upload-card:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 
-        0 20px 60px rgba(0, 0, 0, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3),
-        0 0 0 1px rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 0 80px rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.04);
 }
 
 .upload-card::before {
     content: '';
     position: absolute;
     top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    transition: left 0.5s;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.01) 0%, rgba(255, 255, 255, 0.02) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
 .upload-card:hover::before {
-    left: 100%;
+    opacity: 1;
 }
 
 .upload-icon {
@@ -99,26 +105,29 @@ body {
 }
 
 .icon-main {
-    width: 64px;
-    height: 64px;
-    color: rgba(255, 255, 255, 0.9);
-    filter: drop-shadow(0 4px 12px rgba(255, 255, 255, 0.2));
+    width: 48px;
+    height: 48px;
+    color: rgba(255, 255, 255, 0.7);
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.1));
 }
 
 .upload-card h2 {
-    font-size: 2rem;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.75rem;
     margin-bottom: 1rem;
-    color: rgba(255, 255, 255, 0.95);
-    font-weight: 600;
-    letter-spacing: -0.025em;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+    letter-spacing: -0.02em;
 }
 
 .upload-card p {
-    color: rgba(255, 255, 255, 0.7);
+    font-family: 'Manrope', sans-serif;
+    color: rgba(255, 255, 255, 0.4);
     margin-bottom: 2.5rem;
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     font-weight: 400;
     line-height: 1.6;
+    letter-spacing: 0.01em;
 }
 
 .upload-options {
@@ -134,47 +143,47 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 1.2rem 2.5rem;
+    padding: 1rem 2rem;
     border: none;
-    border-radius: 16px;
-    font-size: 1rem;
-    font-weight: 600;
+    border-radius: 0;
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     text-decoration: none;
-    min-width: 220px;
+    min-width: 180px;
     justify-content: center;
     position: relative;
     overflow: hidden;
-    backdrop-filter: blur(10px);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: white;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.02);
 }
 
 .btn-primary:hover {
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.2) 100%);
-    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.04);
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 1);
 }
 
 .btn-secondary {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    background: rgba(255, 255, 255, 0.02);
+    color: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.01);
 }
 
 .btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-3px) scale(1.05);
-    border-color: rgba(255, 255, 255, 0.4);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.04);
+    transform: translateY(-2px);
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.02);
+    color: rgba(255, 255, 255, 0.8);
 }
 
 .btn-icon {
@@ -183,25 +192,36 @@ body {
 }
 
 .divider {
-    color: rgba(255, 255, 255, 0.6);
-    font-weight: 500;
-    margin: 1rem 0;
-    font-size: 0.9rem;
-    letter-spacing: 0.025em;
+    font-family: 'Manrope', sans-serif;
+    color: rgba(255, 255, 255, 0.3);
+    font-weight: 400;
+    margin: 1.5rem 0;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
 }
 
 /* Recording Button States */
 .btn-primary.recording {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.3) 0%, rgba(220, 38, 38, 0.2) 100%);
-    border-color: rgba(239, 68, 68, 0.5);
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 1);
     animation: pulse 2s infinite;
-    box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.05);
 }
 
 @keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
+    0% { 
+        transform: scale(1);
+        box-shadow: 0 0 30px rgba(255, 255, 255, 0.05);
+    }
+    50% { 
+        transform: scale(1.02);
+        box-shadow: 0 0 40px rgba(255, 255, 255, 0.08);
+    }
+    100% { 
+        transform: scale(1);
+        box-shadow: 0 0 30px rgba(255, 255, 255, 0.05);
+    }
 }
 
 /* Processing Section */
@@ -213,28 +233,28 @@ body {
 }
 
 .processing-header h3 {
-    font-size: 1.5rem;
-    color: rgba(255, 255, 255, 0.95);
-    font-weight: 600;
-    letter-spacing: -0.025em;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+    letter-spacing: -0.02em;
 }
 
 .status-badge {
-    padding: 0.6rem 1.2rem;
-    border-radius: 24px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.9);
-    letter-spacing: 0.025em;
+    font-family: 'Manrope', sans-serif;
+    padding: 0.5rem 1rem;
+    border-radius: 0;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.7);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
 }
 
 .status-badge.success {
-    background: rgba(34, 197, 94, 0.2);
-    border-color: rgba(34, 197, 94, 0.3);
-    color: rgba(34, 197, 94, 1);
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.9);
 }
 
 .progress-container {
@@ -246,33 +266,36 @@ body {
 
 .progress-bar {
     flex: 1;
-    height: 10px;
+    height: 2px;
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
+    border-radius: 0;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .progress-fill {
     height: 100%;
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.6) 100%);
-    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 0;
     transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     width: 0%;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
 }
 
 .progress-text {
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.9);
+    font-family: 'Manrope', sans-serif;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.7);
     min-width: 50px;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
 }
 
 .processing-info p {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 1rem;
+    font-family: 'Manrope', sans-serif;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.9rem;
     font-weight: 400;
+    letter-spacing: 0.01em;
 }
 
 /* Results Section */
@@ -284,25 +307,49 @@ body {
 }
 
 .results-header h3 {
-    font-size: 1.5rem;
-    color: rgba(255, 255, 255, 0.95);
-    font-weight: 600;
-    letter-spacing: -0.025em;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+    letter-spacing: -0.02em;
 }
 
 .transcription-content {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(10px);
-    border-radius: 16px;
-    padding: 2.5rem;
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(20px);
+    border-radius: 0;
+    padding: 2rem;
     margin-bottom: 2rem;
     text-align: left;
-    line-height: 1.7;
-    font-size: 1rem;
-    color: rgba(255, 255, 255, 0.9);
-    min-height: 200px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    line-height: 1.8;
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.8);
+    min-height: 300px;
     font-weight: 400;
+    letter-spacing: 0.01em;
+    box-shadow: 0 0 40px rgba(255, 255, 255, 0.02);
+    position: relative;
+}
+
+.transcription-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+}
+
+.transcription-content::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
 }
 
 .results-actions {
