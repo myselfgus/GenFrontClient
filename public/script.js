@@ -9,6 +9,7 @@ class ZeoClient {
         this.initializeElements();
         this.setupEventListeners();
         this.connectWebSocket();
+        this.initializeAnimations();
     }
     
     initializeElements() {
@@ -78,7 +79,8 @@ class ZeoClient {
             this.mediaRecorder.start();
             this.isRecording = true;
             
-            this.recordBtn.innerHTML = '<span class="btn-icon">⏹️</span>Parar Gravação';
+            this.recordBtn.innerHTML = '<i data-lucide="square" class="btn-icon"></i>Parar Gravação';
+            lucide.createIcons();
             this.recordBtn.classList.add('recording');
             
         } catch (error) {
@@ -93,7 +95,8 @@ class ZeoClient {
             this.mediaRecorder.stream.getTracks().forEach(track => track.stop());
             this.isRecording = false;
             
-            this.recordBtn.innerHTML = '<span class="btn-icon">●</span>Iniciar Gravação';
+            this.recordBtn.innerHTML = '<i data-lucide="mic" class="btn-icon"></i>Iniciar Gravação';
+            lucide.createIcons();
             this.recordBtn.classList.remove('recording');
         }
     }
@@ -132,9 +135,24 @@ class ZeoClient {
     }
     
     showProcessingSection() {
-        this.uploadSection.classList.add('hidden');
-        this.resultsSection.classList.add('hidden');
-        this.processingSection.classList.remove('hidden');
+        // Animate out upload section
+        gsap.to(this.uploadSection, {
+            opacity: 0,
+            y: -30,
+            duration: 0.5,
+            ease: "power2.in",
+            onComplete: () => {
+                this.uploadSection.classList.add('hidden');
+                this.resultsSection.classList.add('hidden');
+                this.processingSection.classList.remove('hidden');
+                
+                // Animate in processing section
+                gsap.fromTo(this.processingSection, 
+                    { opacity: 0, y: 30 },
+                    { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }
+                );
+            }
+        });
         
         this.updateProgress(0, 'processing');
     }
@@ -152,16 +170,54 @@ class ZeoClient {
     }
     
     showResults(transcription) {
-        this.processingSection.classList.add('hidden');
-        this.resultsSection.classList.remove('hidden');
-        
-        this.transcriptionContent.textContent = transcription;
+        // Animate out processing section
+        gsap.to(this.processingSection, {
+            opacity: 0,
+            y: -30,
+            duration: 0.5,
+            ease: "power2.in",
+            onComplete: () => {
+                this.processingSection.classList.add('hidden');
+                this.resultsSection.classList.remove('hidden');
+                
+                // Animate in results section
+                gsap.fromTo(this.resultsSection, 
+                    { opacity: 0, y: 30 },
+                    { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }
+                );
+                
+                // Animate transcription text
+                this.transcriptionContent.textContent = transcription;
+                gsap.fromTo(this.transcriptionContent,
+                    { opacity: 0 },
+                    { opacity: 1, duration: 0.8, delay: 0.3, ease: "power2.out" }
+                );
+            }
+        });
     }
     
     resetToUpload() {
-        this.uploadSection.classList.remove('hidden');
-        this.processingSection.classList.add('hidden');
-        this.resultsSection.classList.add('hidden');
+        // Animate current section out
+        const currentSection = this.resultsSection.classList.contains('hidden') ? 
+                              this.processingSection : this.resultsSection;
+        
+        gsap.to(currentSection, {
+            opacity: 0,
+            y: -30,
+            duration: 0.5,
+            ease: "power2.in",
+            onComplete: () => {
+                this.processingSection.classList.add('hidden');
+                this.resultsSection.classList.add('hidden');
+                this.uploadSection.classList.remove('hidden');
+                
+                // Animate upload section back in
+                gsap.fromTo(this.uploadSection, 
+                    { opacity: 0, y: 30 },
+                    { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }
+                );
+            }
+        });
         
         this.currentJobId = null;
         this.audioFileInput.value = '';
@@ -184,6 +240,71 @@ class ZeoClient {
         document.body.removeChild(a);
         
         URL.revokeObjectURL(url);
+    }
+    
+    initializeAnimations() {
+        // Initialize Lucide icons
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+        
+        // Entrance animations
+        gsap.set(['.header', '.upload-card'], { opacity: 0, y: 30 });
+        
+        gsap.timeline()
+            .to('.header', { 
+                opacity: 1, 
+                y: 0, 
+                duration: 0.8, 
+                ease: "power3.out" 
+            })
+            .to('.upload-card', { 
+                opacity: 1, 
+                y: 0, 
+                duration: 0.8, 
+                ease: "power3.out" 
+            }, "-=0.4");
+        
+        // Add hover animations to buttons
+        this.setupButtonAnimations();
+    }
+    
+    setupButtonAnimations() {
+        const buttons = document.querySelectorAll('.btn-primary, .btn-secondary');
+        
+        buttons.forEach(button => {
+            button.addEventListener('mouseenter', () => {
+                gsap.to(button, {
+                    scale: 1.05,
+                    duration: 0.3,
+                    ease: "power2.out"
+                });
+            });
+            
+            button.addEventListener('mouseleave', () => {
+                gsap.to(button, {
+                    scale: 1,
+                    duration: 0.3,
+                    ease: "power2.out"
+                });
+            });
+            
+            button.addEventListener('mousedown', () => {
+                gsap.to(button, {
+                    scale: 0.95,
+                    duration: 0.1,
+                    ease: "power2.out"
+                });
+            });
+            
+            button.addEventListener('mouseup', () => {
+                gsap.to(button, {
+                    scale: 1.05,
+                    duration: 0.1,
+                    ease: "power2.out"
+                });
+            });
+        });
     }
 }
 

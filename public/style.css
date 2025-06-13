@@ -5,10 +5,13 @@
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: radial-gradient(ellipse at top, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
-    color: #2c3e50;
+    color: #1e293b;
+    font-feature-settings: 'cv11', 'ss01';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .container {
@@ -24,19 +27,22 @@ body {
 }
 
 .logo h1 {
-    font-size: 3rem;
-    font-weight: 700;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-size: 3.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     margin-bottom: 0.5rem;
+    letter-spacing: -0.025em;
+    text-shadow: 0 0 40px rgba(255, 255, 255, 0.3);
 }
 
 .tagline {
     font-size: 1.1rem;
-    color: #6c757d;
-    font-weight: 400;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+    letter-spacing: 0.025em;
 }
 
 .main-content {
@@ -49,36 +55,70 @@ body {
 .upload-card,
 .processing-card,
 .results-card {
-    background: rgba(255, 255, 255, 0.25);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 24px;
     padding: 3rem;
     text-align: center;
-    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
-    transition: all 0.3s ease;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        0 0 0 1px rgba(255, 255, 255, 0.05);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
 }
 
 .upload-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 40px rgba(31, 38, 135, 0.45);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.upload-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+.upload-card:hover::before {
+    left: 100%;
 }
 
 .upload-icon {
-    font-size: 4rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.icon-main {
+    width: 64px;
+    height: 64px;
+    color: rgba(255, 255, 255, 0.9);
+    filter: drop-shadow(0 4px 12px rgba(255, 255, 255, 0.2));
 }
 
 .upload-card h2 {
-    font-size: 1.8rem;
+    font-size: 2rem;
     margin-bottom: 1rem;
-    color: #2c3e50;
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 600;
+    letter-spacing: -0.025em;
 }
 
 .upload-card p {
-    color: #6c757d;
+    color: rgba(255, 255, 255, 0.7);
     margin-bottom: 2.5rem;
     font-size: 1.1rem;
+    font-weight: 400;
+    line-height: 1.6;
 }
 
 .upload-options {
@@ -94,53 +134,68 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 1rem 2rem;
+    padding: 1.2rem 2.5rem;
     border: none;
-    border-radius: 12px;
+    border-radius: 16px;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     text-decoration: none;
-    min-width: 200px;
+    min-width: 220px;
     justify-content: center;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     color: white;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
 .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.2) 100%);
+    border-color: rgba(255, 255, 255, 0.5);
 }
 
 .btn-secondary {
-    background: rgba(255, 255, 255, 0.7);
-    color: #2c3e50;
-    border: 1px solid rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
 }
 
 .btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.9);
-    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px) scale(1.05);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
 }
 
 .btn-icon {
-    font-size: 1.2rem;
+    width: 20px;
+    height: 20px;
 }
 
 .divider {
-    color: #6c757d;
+    color: rgba(255, 255, 255, 0.6);
     font-weight: 500;
-    margin: 0.5rem 0;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+    letter-spacing: 0.025em;
 }
 
 /* Recording Button States */
 .btn-primary.recording {
-    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.3) 0%, rgba(220, 38, 38, 0.2) 100%);
+    border-color: rgba(239, 68, 68, 0.5);
     animation: pulse 2s infinite;
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
 }
 
 @keyframes pulse {
@@ -159,20 +214,27 @@ body {
 
 .processing-header h3 {
     font-size: 1.5rem;
-    color: #2c3e50;
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 600;
+    letter-spacing: -0.025em;
 }
 
 .status-badge {
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-size: 0.9rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 24px;
+    font-size: 0.85rem;
     font-weight: 600;
-    background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
-    color: white;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.9);
+    letter-spacing: 0.025em;
 }
 
 .status-badge.success {
-    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+    background: rgba(34, 197, 94, 0.2);
+    border-color: rgba(34, 197, 94, 0.3);
+    color: rgba(34, 197, 94, 1);
 }
 
 .progress-container {
@@ -184,29 +246,33 @@ body {
 
 .progress-bar {
     flex: 1;
-    height: 8px;
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
     overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .progress-fill {
     height: 100%;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 4px;
-    transition: width 0.3s ease;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.6) 100%);
+    border-radius: 6px;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     width: 0%;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
 .progress-text {
     font-weight: 600;
-    color: #2c3e50;
-    min-width: 40px;
+    color: rgba(255, 255, 255, 0.9);
+    min-width: 50px;
+    font-size: 0.9rem;
 }
 
 .processing-info p {
-    color: #6c757d;
+    color: rgba(255, 255, 255, 0.7);
     font-size: 1rem;
+    font-weight: 400;
 }
 
 /* Results Section */
@@ -219,20 +285,24 @@ body {
 
 .results-header h3 {
     font-size: 1.5rem;
-    color: #2c3e50;
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 600;
+    letter-spacing: -0.025em;
 }
 
 .transcription-content {
-    background: rgba(255, 255, 255, 0.5);
-    border-radius: 12px;
-    padding: 2rem;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 2.5rem;
     margin-bottom: 2rem;
     text-align: left;
-    line-height: 1.6;
+    line-height: 1.7;
     font-size: 1rem;
-    color: #2c3e50;
+    color: rgba(255, 255, 255, 0.9);
     min-height: 200px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    font-weight: 400;
 }
 
 .results-actions {

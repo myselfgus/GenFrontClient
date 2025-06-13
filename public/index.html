@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZEO - AI Clinical Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -18,20 +23,22 @@
         <main class="main-content">
             <div class="upload-section" id="uploadSection">
                 <div class="upload-card">
-                    <div class="upload-icon">🎙️</div>
+                    <div class="upload-icon">
+                        <i data-lucide="mic" class="icon-main"></i>
+                    </div>
                     <h2>Iniciar Gravação ou Enviar Áudio</h2>
                     <p>Grave sua consulta ou faça upload de um arquivo de áudio</p>
                     
                     <div class="upload-options">
                         <button class="btn-primary" id="recordBtn">
-                            <span class="btn-icon">●</span>
+                            <i data-lucide="mic" class="btn-icon"></i>
                             Iniciar Gravação
                         </button>
                         
                         <div class="divider">ou</div>
                         
                         <label for="audioFile" class="btn-secondary">
-                            <span class="btn-icon">📁</span>
+                            <i data-lucide="upload" class="btn-icon"></i>
                             Selecionar Arquivo
                         </label>
                         <input type="file" id="audioFile" accept="audio/*" hidden>
@@ -72,9 +79,11 @@
                     
                     <div class="results-actions">
                         <button class="btn-secondary" id="newTranscriptionBtn">
+                            <i data-lucide="plus" class="btn-icon"></i>
                             Nova Transcrição
                         </button>
                         <button class="btn-primary" id="exportBtn">
+                            <i data-lucide="download" class="btn-icon"></i>
                             Exportar
                         </button>
                     </div>
