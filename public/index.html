@@ -100,7 +100,7 @@
                     <p>Grave sua consulta ou faça upload de um arquivo de áudio</p>
                     
                     <div class="upload-options">
-                        <button class="btn-primary" id="recordBtn">
+                        <button class="btn-primary" id="recordBtn" aria-label="Iniciar gravação de áudio">
                             <i data-lucide="mic" class="btn-icon"></i>
                             Iniciar Gravação
                         </button>
@@ -111,7 +111,7 @@
                             <i data-lucide="upload" class="btn-icon"></i>
                             Selecionar Arquivo
                         </label>
-                        <input type="file" id="audioFile" accept="audio/*" hidden>
+                        <input type="file" id="audioFile" accept="audio/*" hidden aria-label="Selecionar arquivo de áudio">
                     </div>
                 </div>
             </div>
@@ -179,7 +179,7 @@
                         <span class="chat-status">Online</span>
                     </div>
                 </div>
-                <button class="chat-close" id="chatClose">
+                <button class="chat-close" id="chatClose" aria-label="Fechar chat">
                     <i data-lucide="x" class="close-icon"></i>
                 </button>
             </div>
@@ -198,8 +198,8 @@
             
             <div class="chat-input-container">
                 <div class="chat-input-wrapper">
-                    <input type="text" class="chat-input" id="chatInput" placeholder="Digite sua mensagem..." autocomplete="off">
-                    <button class="chat-send" id="chatSend">
+                    <input type="text" class="chat-input" id="chatInput" placeholder="Digite sua mensagem..." autocomplete="off" aria-label="Mensagem do chat">
+                    <button class="chat-send" id="chatSend" aria-label="Enviar mensagem">
                         <i data-lucide="send" class="send-icon"></i>
                     </button>
                 </div>
