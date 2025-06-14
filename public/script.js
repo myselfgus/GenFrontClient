@@ -55,8 +55,8 @@ class ZeoClient {
         this.connectWebSocket();
         this.initializeAnimations();
         
-        // Transition to main app directly
-        this.transitionToMainApp();
+        // Show auth modal after splash
+        this.showAuthModal();
     }
     
     initializeElements() {
