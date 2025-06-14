@@ -8,7 +8,8 @@
     "start": "node server.js",
     "build": "npm install --production",
     "railway:deploy": "railway up",
-    "railway:logs": "railway logs"
+    "railway:logs": "railway logs",
+    "vercel:deploy": "vercel --prod"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.3",

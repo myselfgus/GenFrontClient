@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="https://alcdn.msauth.net/browser/2.38.3/js/msal-browser.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -28,6 +29,57 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div class="auth-modal hidden" id="authModal">
+        <div class="auth-modal-content">
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <h2>ZEO</h2>
+                    <span class="auth-subtitle">Secure Access</span>
+                </div>
+            </div>
+            
+            <!-- Entra ID Auth Form -->
+            <div class="auth-form" id="entraForm">
+                <div class="entra-info">
+                    <div class="entra-icon">
+                        <i data-lucide="building" class="building-icon"></i>
+                    </div>
+                    <h3>Microsoft Entra ID</h3>
+                    <p>Faça login com sua conta organizacional Microsoft para acessar o ZEO de forma segura.</p>
+                </div>
+                
+                <button class="auth-button primary" id="entraLoginButton">
+                    <span class="button-text">Entrar com Microsoft</span>
+                    <i data-lucide="microsoft" class="button-icon"></i>
+                </button>
+                
+                <div class="entra-status hidden" id="entraStatus">
+                    <div class="status-indicator">
+                        <div class="status-dot"></div>
+                        <span>Autenticando com Microsoft...</span>
+                    </div>
+                </div>
+                
+                <div class="auth-divider">informações do login</div>
+                
+                <div class="login-info hidden" id="loginInfo">
+                    <div class="user-avatar" id="userAvatar"></div>
+                    <div class="user-details">
+                        <div class="user-name" id="userName"></div>
+                        <div class="user-email" id="userEmail"></div>
+                        <div class="user-tenant" id="userTenant"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="auth-footer">
+                <p>ZEO AI Clinical Assistant - Seguro & Privado</p>
+            </div>
+        </div>
+        <div class="auth-overlay"></div>
     </div>
 
     <!-- Main Application -->
@@ -109,6 +161,62 @@
                 </div>
             </div>
         </main>
+        
+        <!-- Floating Chat Button -->
+        <div class="chat-toggle" id="chatToggle">
+            <i data-lucide="message-circle" class="chat-icon"></i>
+            <div class="chat-pulse"></div>
+        </div>
+        
+        <!-- Chat Panel -->
+        <div class="chat-panel hidden" id="chatPanel">
+            <div class="chat-header">
+                <div class="chat-title">
+                    <div class="chat-avatar">
+                        <i data-lucide="bot" class="avatar-icon"></i>
+                    </div>
+                    <div class="chat-info">
+                        <h4>ZEO Assistant</h4>
+                        <span class="chat-status">Online</span>
+                    </div>
+                </div>
+                <button class="chat-close" id="chatClose">
+                    <i data-lucide="x" class="close-icon"></i>
+                </button>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages">
+                <div class="chat-message bot-message">
+                    <div class="message-avatar">
+                        <i data-lucide="bot" class="avatar-icon"></i>
+                    </div>
+                    <div class="message-content">
+                        <p>Olá! Sou o ZEO, seu assistente clínico. Como posso ajudá-lo hoje?</p>
+                        <span class="message-time">Agora</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-input-container">
+                <div class="chat-input-wrapper">
+                    <input type="text" class="chat-input" id="chatInput" placeholder="Digite sua mensagem..." autocomplete="off">
+                    <button class="chat-send" id="chatSend">
+                        <i data-lucide="send" class="send-icon"></i>
+                    </button>
+                </div>
+                <div class="chat-typing hidden" id="chatTyping">
+                    <div class="typing-indicator">
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </div>
+                    <span class="typing-text">ZEO está digitando...</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Chat Overlay -->
+        <div class="chat-overlay hidden" id="chatOverlay"></div>
     </div>
 
     <script src="script.js"></script>

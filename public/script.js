@@ -6,7 +6,43 @@ class ZeoClient {
         this.ws = null;
         this.currentJobId = null;
         
+        // Initialize MSAL
+        this.initializeMSAL();
         this.initializeSplashScreen();
+    }
+    
+    initializeMSAL() {
+        // MSAL Configuration
+        this.msalConfig = {
+            auth: {
+                clientId: "e406fc3a-55f9-4477-9039-09f27292560e", // ZEO Clinical AI Assistant
+                authority: "https://login.microsoftonline.com/c97cb1fb-d321-401b-b372-417a528542ba", // healthhealth.io tenant
+                redirectUri: window.location.origin + "/",
+                postLogoutRedirectUri: window.location.origin + "/"
+            },
+            cache: {
+                cacheLocation: "sessionStorage",
+                storeAuthStateInCookie: false,
+            }
+        };
+        
+        this.loginRequest = {
+            scopes: ["User.Read", "profile", "openid", "email"]
+        };
+        
+        // Initialize MSAL instance
+        this.msalInstance = new msal.PublicClientApplication(this.msalConfig);
+        
+        // Handle redirect promise
+        this.msalInstance.handleRedirectPromise()
+            .then((response) => {
+                if (response) {
+                    this.handleAuthResponse(response);
+                }
+            })
+            .catch((error) => {
+                console.error('Auth redirect error:', error);
+            });
     }
     
     async initializeSplashScreen() {
@@ -19,8 +55,8 @@ class ZeoClient {
         this.connectWebSocket();
         this.initializeAnimations();
         
-        // Transition to main app
-        this.transitionToMainApp();
+        // Show auth modal after splash
+        this.showAuthModal();
     }
     
     initializeElements() {
@@ -38,6 +74,27 @@ class ZeoClient {
         this.transcriptionContent = document.getElementById('transcriptionContent');
         this.newTranscriptionBtn = document.getElementById('newTranscriptionBtn');
         this.exportBtn = document.getElementById('exportBtn');
+        
+        // Chat elements
+        this.chatToggle = document.getElementById('chatToggle');
+        this.chatPanel = document.getElementById('chatPanel');
+        this.chatClose = document.getElementById('chatClose');
+        this.chatOverlay = document.getElementById('chatOverlay');
+        this.chatMessages = document.getElementById('chatMessages');
+        this.chatInput = document.getElementById('chatInput');
+        this.chatSend = document.getElementById('chatSend');
+        this.chatTyping = document.getElementById('chatTyping');
+        
+        // Auth elements
+        this.authModal = document.getElementById('authModal');
+        this.entraForm = document.getElementById('entraForm');
+        this.entraLoginButton = document.getElementById('entraLoginButton');
+        this.entraStatus = document.getElementById('entraStatus');
+        this.loginInfo = document.getElementById('loginInfo');
+        this.userAvatar = document.getElementById('userAvatar');
+        this.userName = document.getElementById('userName');
+        this.userEmail = document.getElementById('userEmail');
+        this.userTenant = document.getElementById('userTenant');
     }
     
     setupEventListeners() {
@@ -45,13 +102,37 @@ class ZeoClient {
         this.audioFileInput.addEventListener('change', (e) => this.handleFileUpload(e));
         this.newTranscriptionBtn.addEventListener('click', () => this.resetToUpload());
         this.exportBtn.addEventListener('click', () => this.exportTranscription());
+        
+        // Chat event listeners
+        this.chatToggle.addEventListener('click', () => this.toggleChat());
+        this.chatClose.addEventListener('click', () => this.closeChat());
+        this.chatOverlay.addEventListener('click', () => this.closeChat());
+        this.chatSend.addEventListener('click', () => this.sendMessage());
+        this.chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                this.sendMessage();
+            }
+        });
+        
+        // Auth event listeners
+        this.entraLoginButton.addEventListener('click', () => this.handleEntraLogin());
     }
     
     connectWebSocket() {
-        // Dynamic WebSocket URL for production
+        // Check if running on Vercel (no WebSocket support)
+        const isVercel = window.location.hostname.includes('vercel.app');
+        
+        if (isVercel) {
+            console.log('Running on Vercel - using polling instead of WebSocket');
+            this.ws = null;
+            this.usePolling = true;
+            return;
+        }
+        
+        // WebSocket for local development
         const isProduction = window.location.protocol === 'https:';
         const wsProtocol = isProduction ? 'wss:' : 'ws:';
-        const wsHost = isProduction ? 'zeo-backend.railway.app' : 'localhost:8080';
+        const wsHost = 'localhost:8080';
         
         this.ws = new WebSocket(`${wsProtocol}//${wsHost}`);
         
@@ -66,10 +147,36 @@ class ZeoClient {
             console.log('WebSocket disconnected, reconnecting...');
             setTimeout(() => this.connectWebSocket(), 3000);
         };
-        
-        this.ws.onerror = (error) => {
-            console.error('WebSocket error:', error);
-        };
+    }
+    
+    // Polling for Vercel deployment
+    startPolling() {
+        this.pollingInterval = setInterval(async () => {
+            if (!this.currentJobId) {
+                clearInterval(this.pollingInterval);
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/status/${this.currentJobId}`);
+                const job = await response.json();
+                
+                this.updateProgress(job.progress, job.status, job.transcription);
+                
+                if (job.status === 'completed' || job.status === 'error') {
+                    clearInterval(this.pollingInterval);
+                }
+            } catch (error) {
+                console.error('Polling error:', error);
+            }
+        }, 1000);
+    }
+    
+    stopPolling() {
+        if (this.pollingInterval) {
+            clearInterval(this.pollingInterval);
+            this.pollingInterval = null;
+        }
     }
     
     async toggleRecording() {
@@ -136,7 +243,7 @@ class ZeoClient {
         try {
             this.showProcessingSection();
             
-            const response = await fetch('/upload', {
+            const response = await fetch('/api/upload', {
                 method: 'POST',
                 body: formData
             });
@@ -152,6 +259,11 @@ class ZeoClient {
             console.error('Erro no upload:', error);
             alert('Erro ao fazer upload do áudio');
             this.resetToUpload();
+        }
+        
+        // Start polling if not using WebSocket
+        if (this.usePolling && this.currentJobId) {
+            this.startPolling();
         }
     }
     
@@ -389,6 +501,306 @@ class ZeoClient {
                 );
             }
         });
+    }
+    
+    // Chat functionality
+    toggleChat() {
+        const isHidden = this.chatPanel.classList.contains('hidden');
+        
+        if (isHidden) {
+            this.openChat();
+        } else {
+            this.closeChat();
+        }
+    }
+    
+    openChat() {
+        this.chatPanel.classList.remove('hidden');
+        this.chatOverlay.classList.remove('hidden');
+        this.chatToggle.style.display = 'none';
+        
+        // Focus input
+        setTimeout(() => {
+            this.chatInput.focus();
+        }, 400);
+    }
+    
+    closeChat() {
+        this.chatPanel.classList.add('hidden');
+        this.chatOverlay.classList.add('hidden');
+        this.chatToggle.style.display = 'flex';
+        this.stopPolling();
+    }
+    
+    async sendMessage() {
+        const message = this.chatInput.value.trim();
+        if (!message) return;
+        
+        // Add user message
+        this.addMessage(message, 'user');
+        this.chatInput.value = '';
+        
+        // Show typing indicator
+        this.showTyping();
+        
+        try {
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message,
+                    context: this.getConversationContext()
+                })
+            });
+            
+            const result = await response.json();
+            
+            this.hideTyping();
+            
+            if (result.success) {
+                this.addMessage(result.response, 'bot');
+            } else {
+                this.addMessage('Desculpe, ocorreu um erro. Tente novamente.', 'bot');
+            }
+        } catch (error) {
+            console.error('Chat error:', error);
+            this.hideTyping();
+            this.addMessage('Erro de conexão. Verifique sua internet.', 'bot');
+        }
+    }
+    
+    addMessage(content, sender) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `chat-message ${sender}-message`;
+        
+        const time = new Date().toLocaleTimeString('pt-BR', { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+        });
+        
+        if (sender === 'user') {
+            messageDiv.innerHTML = `
+                <div class="message-avatar">
+                    <i data-lucide="user" class="avatar-icon"></i>
+                </div>
+                <div class="message-content">
+                    <p>${content}</p>
+                    <span class="message-time">${time}</span>
+                </div>
+            `;
+        } else {
+            messageDiv.innerHTML = `
+                <div class="message-avatar">
+                    <i data-lucide="bot" class="avatar-icon"></i>
+                </div>
+                <div class="message-content">
+                    <p>${content}</p>
+                    <span class="message-time">${time}</span>
+                </div>
+            `;
+        }
+        
+        this.chatMessages.appendChild(messageDiv);
+        
+        // Re-initialize Lucide icons
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+        
+        // Scroll to bottom
+        this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
+    }
+    
+    showTyping() {
+        this.chatTyping.classList.remove('hidden');
+    }
+    
+    hideTyping() {
+        this.chatTyping.classList.add('hidden');
+    }
+    
+    getConversationContext() {
+        // Get context from transcription if available
+        const transcription = this.transcriptionContent?.textContent;
+        return transcription ? { transcription } : null;
+    }
+    
+    // Auth functionality
+    showAuthModal() {
+        const splashScreen = document.getElementById('splashScreen');
+        
+        // Check if user is already logged in
+        const accounts = this.msalInstance.getAllAccounts();
+        if (accounts.length > 0) {
+            this.handleExistingAccount(accounts[0]);
+            return;
+        }
+        
+        // Hide splash screen
+        gsap.to(splashScreen, {
+            opacity: 0,
+            scale: 0.95,
+            duration: 0.8,
+            ease: "power2.in",
+            onComplete: () => {
+                splashScreen.classList.add('hidden');
+                
+                // Show auth modal
+                this.authModal.classList.remove('hidden');
+            }
+        });
+    }
+    
+    async handleEntraLogin() {
+        this.setAuthLoading(this.entraLoginButton, true);
+        this.entraStatus.classList.remove('hidden');
+        
+        try {
+            // Trigger Microsoft login popup
+            const response = await this.msalInstance.loginPopup(this.loginRequest);
+            this.handleAuthResponse(response);
+            
+        } catch (error) {
+            console.error('Entra login error:', error);
+            this.setAuthLoading(this.entraLoginButton, false);
+            this.entraStatus.classList.add('hidden');
+            this.showAuthError('Falha na autenticação Microsoft. Tente novamente.');
+        }
+    }
+    
+    async handleAuthResponse(response) {
+        if (response) {
+            // Get user info from Graph API
+            await this.getUserInfo(response.account);
+            this.authenticateUser(response.account);
+        }
+    }
+    
+    async handleExistingAccount(account) {
+        // User is already logged in, show their info and proceed
+        await this.getUserInfo(account);
+        this.authenticateUser(account);
+    }
+    
+    async getUserInfo(account) {
+        try {
+            // Get access token for Graph API
+            const tokenRequest = {
+                scopes: ["User.Read"],
+                account: account
+            };
+            
+            const response = await this.msalInstance.acquireTokenSilent(tokenRequest);
+            
+            // Call Graph API to get user details
+            const userInfo = await this.callGraphAPI(response.accessToken);
+            
+            // Update UI with user info
+            this.displayUserInfo(userInfo, account);
+            
+        } catch (error) {
+            console.error('Error getting user info:', error);
+        }
+    }
+    
+    async callGraphAPI(accessToken) {
+        const headers = new Headers();
+        headers.append("Authorization", `Bearer ${accessToken}`);
+        
+        const response = await fetch("https://graph.microsoft.com/v1.0/me", {
+            method: "GET",
+            headers: headers
+        });
+        
+        return await response.json();
+    }
+    
+    displayUserInfo(userInfo, account) {
+        // Display user information
+        this.userName.textContent = userInfo.displayName || account.name;
+        this.userEmail.textContent = userInfo.mail || account.username;
+        this.userTenant.textContent = `Tenant: ${account.tenantId.substring(0, 8)}...`;
+        
+        // Create avatar with initials
+        const initials = userInfo.displayName 
+            ? userInfo.displayName.split(' ').map(n => n[0]).join('').substring(0, 2)
+            : account.name.substring(0, 2);
+        this.userAvatar.textContent = initials.toUpperCase();
+        
+        // Show user info
+        this.loginInfo.classList.remove('hidden');
+        this.entraStatus.classList.add('hidden');
+    }
+    
+    authenticateUser(user) {
+        // Store user session
+        sessionStorage.setItem('zeo_user', JSON.stringify(user));
+        
+        // Hide auth modal and show main app
+        this.authModal.classList.add('hidden');
+        this.transitionToMainApp();
+    }
+    
+    setAuthLoading(button, loading) {
+        if (loading) {
+            button.disabled = true;
+            button.style.opacity = '0.7';
+            const buttonText = button.querySelector('.button-text');
+            buttonText.textContent = 'Autenticando...';
+        } else {
+            button.disabled = false;
+            button.style.opacity = '1';
+            const buttonText = button.querySelector('.button-text');
+            buttonText.textContent = 'Entrar com Microsoft';
+        }
+    }
+    
+    showAuthError(message) {
+        // Create error message element if it doesn't exist
+        let errorEl = document.querySelector('.auth-error');
+        if (!errorEl) {
+            errorEl = document.createElement('div');
+            errorEl.className = 'auth-error';
+            errorEl.style.cssText = `
+                color: #ff6b6b;
+                background: rgba(255, 107, 107, 0.1);
+                border: 1px solid rgba(255, 107, 107, 0.3);
+                padding: 0.75rem 1rem;
+                border-radius: 12px;
+                font-size: 0.875rem;
+                margin-top: 1rem;
+                text-align: center;
+                font-family: 'Manrope', sans-serif;
+            `;
+            
+            const activeForm = this.entraForm;
+            activeForm.appendChild(errorEl);
+        }
+        
+        errorEl.textContent = message;
+        
+        // Remove error after 5 seconds
+        setTimeout(() => {
+            if (errorEl && errorEl.parentNode) {
+                errorEl.parentNode.removeChild(errorEl);
+            }
+        }, 5000);
+    }
+    
+    transitionToMainApp() {
+        const mainApp = document.getElementById('mainApp');
+        
+        // Show main app
+        mainApp.style.opacity = '1';
+        mainApp.style.visibility = 'visible';
+        
+        // Animate main app entrance
+        gsap.fromTo(mainApp, 
+            { opacity: 0, scale: 1.05 },
+            { opacity: 1, scale: 1, duration: 0.8, ease: "power3.out" }
+        );
     }
 }
 

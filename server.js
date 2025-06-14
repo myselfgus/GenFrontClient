@@ -190,19 +190,130 @@ function broadcastProgress(jobId, job) {
   });
 }
 
-// Add endpoint to get connected MCP servers info
+// === ADVANCED MCP ENDPOINTS ===
+
+// Complete server status with health and capabilities
 app.get('/mcp/servers', (req, res) => {
   res.json({
     connected: mcpClient.getConnectedServers(),
-    status: mcpClient.connected ? 'connected' : 'disconnected'
+    status: mcpClient.connected ? 'connected' : 'disconnected',
+    serverStatus: mcpClient.getServerStatus()
   });
 });
 
-// Add endpoint to get available tools from MCP servers
+// Server health monitoring
+app.get('/mcp/health/:serverName?', async (req, res) => {
+  try {
+    if (req.params.serverName) {
+      const health = await mcpClient.pingServer(req.params.serverName);
+      res.json({ server: req.params.serverName, ...health });
+    } else {
+      const health = mcpClient.getServerHealth();
+      res.json({ allServers: health });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get available tools from MCP servers
 app.get('/mcp/tools/:serverName?', async (req, res) => {
   try {
     const tools = await mcpClient.getAvailableTools(req.params.serverName);
     res.json({ tools });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get available resources from MCP servers
+app.get('/mcp/resources/:serverName?', async (req, res) => {
+  try {
+    const resources = await mcpClient.getAvailableResources(req.params.serverName);
+    res.json({ resources });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get specific resource
+app.get('/mcp/resource/:resourceUri', async (req, res) => {
+  try {
+    const { serverName } = req.query;
+    const result = await mcpClient.getResource(req.params.resourceUri, serverName);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get available prompts from MCP servers
+app.get('/mcp/prompts/:serverName?', async (req, res) => {
+  try {
+    const prompts = await mcpClient.getAvailablePrompts(req.params.serverName);
+    res.json({ prompts });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get specific prompt
+app.post('/mcp/prompt/:promptName', async (req, res) => {
+  try {
+    const { serverName } = req.query;
+    const { args = {} } = req.body;
+    const result = await mcpClient.getPrompt(req.params.promptName, args, serverName);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Session management endpoints
+app.post('/mcp/sessions', (req, res) => {
+  try {
+    const { sessionId, context = {} } = req.body;
+    const session = mcpClient.createSession(sessionId || `session_${Date.now()}`, context);
+    res.json({ success: true, session });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/mcp/sessions/:sessionId', (req, res) => {
+  try {
+    const session = mcpClient.getSession(req.params.sessionId);
+    if (!session) {
+      return res.status(404).json({ error: 'Session not found' });
+    }
+    res.json({ session });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Batch tool calls
+app.post('/mcp/batch', async (req, res) => {
+  try {
+    const { calls, sessionId } = req.body;
+    const results = await mcpClient.batchToolCalls(calls, sessionId);
+    res.json({ results });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Advanced tool call with session context
+app.post('/mcp/tool/:toolName', async (req, res) => {
+  try {
+    const { serverName, sessionId } = req.query;
+    const { args = {} } = req.body;
+    
+    const result = sessionId 
+      ? await mcpClient.callToolWithSession(req.params.toolName, args, sessionId, serverName)
+      : await mcpClient.callTool(req.params.toolName, args, serverName);
+    
+    res.json(result);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
