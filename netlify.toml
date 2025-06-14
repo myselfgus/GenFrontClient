@@ -4,9 +4,6 @@
 
 [build.environment]
   NODE_ENV = "production"
-  XAI_API_KEY = "xai-2Zu3ZY8UwcPf1qSKCdQvX5Hzh4vJh5UgLrwO1q1YwWmLEDA4wGSpb5xtAsKbx1MxdhNjlXfOg2w4JlAE"
-  ENTRA_CLIENT_ID = "e406fc3a-55f9-4477-9039-09f27292560e"
-  ENTRA_AUTHORITY = "https://login.microsoftonline.com/c97cb1fb-d321-401b-b372-417a528542ba"
 
 [[redirects]]
   from = "/api/*"
