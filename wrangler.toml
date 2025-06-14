@@ -1,0 +1,14 @@
+# Cloudflare Pages configuration
+name = "zeo-client"
+compatibility_date = "2024-01-01"
+
+[build]
+command = "npm install"
+publish = "public"
+
+[env.production]
+vars = { NODE_ENV = "production" }
+
+[[env.production.routes]]
+pattern = "zeo.app/*"
+zone_name = "zeo.app"

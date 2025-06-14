@@ -1,0 +1,9 @@
+# Cloudflare Pages redirects for SPA routing
+/api/* https://zeo-backend.railway.app/api/:splat 200
+/upload https://zeo-backend.railway.app/upload 200
+/status/* https://zeo-backend.railway.app/status/:splat 200
+/mcp/* https://zeo-backend.railway.app/mcp/:splat 200
+/health https://zeo-backend.railway.app/health 200
+
+# Fallback for SPA
+/* /index.html 200

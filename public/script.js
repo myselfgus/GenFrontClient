@@ -48,7 +48,12 @@ class ZeoClient {
     }
     
     connectWebSocket() {
-        this.ws = new WebSocket('ws://localhost:8080');
+        // Dynamic WebSocket URL for production
+        const isProduction = window.location.protocol === 'https:';
+        const wsProtocol = isProduction ? 'wss:' : 'ws:';
+        const wsHost = isProduction ? 'zeo-backend.railway.app' : 'localhost:8080';
+        
+        this.ws = new WebSocket(`${wsProtocol}//${wsHost}`);
         
         this.ws.onmessage = (event) => {
             const data = JSON.parse(event.data);
@@ -58,7 +63,12 @@ class ZeoClient {
         };
         
         this.ws.onclose = () => {
+            console.log('WebSocket disconnected, reconnecting...');
             setTimeout(() => this.connectWebSocket(), 3000);
+        };
+        
+        this.ws.onerror = (error) => {
+            console.error('WebSocket error:', error);
         };
     }
     
