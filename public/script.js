@@ -442,6 +442,13 @@ class ZeoClient {
     
     async animateSplashScreen() {
         return new Promise((resolve) => {
+            // Check if GSAP is available
+            if (typeof gsap === 'undefined') {
+                console.error('GSAP not loaded, using fallback');
+                setTimeout(() => resolve(), 3000);
+                return;
+            }
+            
             const tl = gsap.timeline();
             
             // Animate logo title
@@ -473,13 +480,31 @@ class ZeoClient {
             // Wait for effect
             .to({}, { duration: 2 })
             // Complete
-            .call(() => resolve());
+            .call(() => {
+                console.log('Splash animation complete');
+                resolve();
+            });
         });
     }
     
     transitionToMainApp() {
+        console.log('Starting transition to main app');
         const splashScreen = document.getElementById('splashScreen');
         const mainApp = document.getElementById('mainApp');
+        
+        if (!splashScreen || !mainApp) {
+            console.error('Missing elements:', { splashScreen, mainApp });
+            return;
+        }
+        
+        // Check if GSAP is available
+        if (typeof gsap === 'undefined') {
+            console.error('GSAP not available, using fallback transition');
+            splashScreen.style.display = 'none';
+            mainApp.style.opacity = '1';
+            mainApp.style.visibility = 'visible';
+            return;
+        }
         
         // Fade out splash
         gsap.to(splashScreen, {
@@ -488,6 +513,7 @@ class ZeoClient {
             duration: 0.8,
             ease: "power2.in",
             onComplete: () => {
+                console.log('Splash fade out complete');
                 splashScreen.classList.add('hidden');
                 
                 // Show main app
